@@ -1,0 +1,74 @@
+<div class="container">
+  <h2>City List</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Country</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let city of cities">
+        <td>{{ city.id }}</td>
+        <td>{{ city.name }}</td>
+        <td>{{ city.lat }}</td>
+        <td>{{ city.lon }}</td>
+        <td>
+          {{ getCountryName(city.countryId) }}
+        </td>
+        <td>
+          <button class="btn btn-info" (click)="editCity(city)">Edit</button>
+          <button class="btn btn-danger" (click)="deleteCity(city)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="container">
+  <h4>Select Country</h4>
+  <form [formGroup]="cityForm" (ngSubmit)="saveCities()">
+    <label for="countryId">Country:</label>
+    <select id="countryId" formControlName="countryId" class="form-control">
+      <option value="0">Create New Country</option>
+      <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+    </select>
+  <br>
+
+    <div *ngIf="cityForm.get('countryId')?.value === 0" style="display: flex;">
+      <label for="name" class="form-control-sm">Country Name:</label>
+      <input type="text" formControlName="name" class="form-control" required>
+
+      <label for="iso2" class="form-control-sm">Country ISO2:</label>
+      <input type="text" formControlName="iso2" class="form-control" required>
+
+      <label for="iso3" class="form-control-sm">Country ISO3:</label>
+      <input type="text" formControlName="iso3" class="form-control" required>
+    </div>
+
+    <hr>
+    <h4>Create City</h4>
+
+
+    <hr>
+    <div formArrayName="cities">
+      <div *ngFor="let city of cityControls; let i = index" class="mb-3">
+        <div [formGroupName]="i" class="border p-3">
+          <label for="name{{i}}" class="form-label">City Name:</label>
+          <input type="text" id="name{{i}}" formControlName="name" class="form-control">
+          <label for="lat{{i}}" class="form-label">Latitude:</label>
+          <input type="number" id="lat{{i}}" formControlName="lat" class="form-control">
+          <label for="lon{{i}}" class="form-label">Longitude:</label>
+          <input type="number" id="lon{{i}}" formControlName="lon" class="form-control">
+          <button type="button" (click)="removeCity(i)" class="btn btn-danger mt-2">Remove</button>
+        </div>
+      </div>
+    </div>
+    <button type="button" (click)="addCity()" class="btn btn-success">Add New City</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
